@@ -4,15 +4,19 @@ import random
 from django.core.management.base import BaseCommand
 from json_serve.models import ActivityPeriod
 
-from main.models import StockRecord
-
 
 class Command(BaseCommand):
     help = "Save random activity data of users"
 
     def add_arguments(self, parser):
-        parser.add_argument('entries', nargs='+', type=int)
-    
+        parser.add_argument('--entries', type=int, const=10, nargs='?')
+        parser.add_argument(
+            '--delete-existing',
+            action='store_true',
+            dest='delete_existing',
+            default=False,
+            help='Delete existing activity records.',
+        )
     def get_timezone(self):
         return random.choice(['Africa/Lubumbashi', 'Asia/Manila', 'America/Ensenada', 'Europe/Jersey', 
                             'America/Panama', 'Europe/Moscow', 'America/Winnipeg', 'Africa/Mbabane',
@@ -27,16 +31,16 @@ class Command(BaseCommand):
         month = random.randint(1, 12)
         year = random.randint(2014, 2017)
         hour = random.randint(0, 23)
-        minute = random.randint(0, 60)
+        minute = random.randint(0, 59)
         start = datetime(year, month, day, hour, minute)
         dhour = random.randint(0, 3)
-        dmin = random.randint(0, 60)
+        dmin = random.randint(0, 59)
         end = start + timedelta(hours=dhour, minutes=dmin)
         return start, end
 
     def handle(self, *args, **options):
         records = []
-        for _ in range(options['entries']):
+        for _ in range(options['entries'] or 10):
             entry, end = self.get_dates()
             kwargs = {
                 'real_name': self.get_name(),
@@ -46,7 +50,10 @@ class Command(BaseCommand):
             }
             record = ActivityPeriod(**kwargs)
             records.append(record)
+        if options["delete_existing"]:
+            ActivityPeriod.objects.all().delete()
+            self.stdout.write(self.style.SUCCESS('Existing records deleted.'))
         ActivityPeriod.objects.bulk_create(records)
-        self.stdout.write(self.style.SUCCESS('Entries created and saved successfully.'))
+        self.stdout.write(self.style.SUCCESS('%s Entries created and saved successfully.' % (options['entries'] or 10)))
 
         
