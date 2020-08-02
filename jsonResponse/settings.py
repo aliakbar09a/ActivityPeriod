@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import json
+import django_heroku
+
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -126,3 +127,4 @@ STATIC_URL = '/static/'
 # timezones 
 USE_TZ = False
 
+django_heroku.settings(locals())
