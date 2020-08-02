@@ -1,12 +1,12 @@
 # Serving json file using django and heroku
-### Here is the <a src="http://activityperiod-fullthrottle.herokuapp.com/">link</a>
+[API Link](http://activityperiod-fullthrottle.herokuapp.com/)
 
 A custom management command is also implemented to randomly fill the users activity. It is:
 ```
 $ python manage.py help populate
 usage: manage.py populate [-h] [--entries [ENTRIES]] [--delete-existing]
 ```
-For e.g.
+#### For e.g.
 ```
 python manage.py populate
 ```
