@@ -9,7 +9,12 @@ class Command(BaseCommand):
     help = "Save random activity data of users"
 
     def add_arguments(self, parser):
-        parser.add_argument('--entries', type=int, const=10, nargs='?')
+        parser.add_argument(
+            '--entries',
+            type=int, 
+            help="to specify the number of records to be generated",
+            const=10,
+            nargs='?')
         parser.add_argument(
             '--delete-existing',
             action='store_true',
